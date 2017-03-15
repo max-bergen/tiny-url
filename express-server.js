@@ -28,16 +28,15 @@ app.post('/urls', (req, res) => {
 
   let long = req.body['longURL'];
   urlDatabase[short] = long;
-  res.redirect('/urls/' + short);
+  res.redirect('/urls/');
   console.log(urlDatabase);
 });
 
 app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[req.params.id];
-  res.redirect('/urls');
+  res.redirect('/urls/');
 });
 
-// THING YOURE CURRENTLY WORKING ON
 app.post('/urls/:id', (req, res) => {
   const shortUrl = req.params.id;
   let longUrl = req.body.longURL;
