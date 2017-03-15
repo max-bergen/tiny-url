@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>TinyApp</title>
+  <% include ../views/partials/_header %>
+</head>
+<body>
+  <ol>
+    <% for(key in urls) { %>
+      <li>
+      <%= key %>: <%= urls[key] %>
+      <form action='/urls/<%=key%>/delete' method='POST'>
+      <button>Delete</button>
+      </li>
+    <% } %>
+    </ol>
+</body>
+</html>
