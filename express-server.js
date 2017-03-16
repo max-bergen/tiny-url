@@ -78,14 +78,22 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
+
   let userEmail = req.body['email'];
   let userPassword = req.body['password'];
-  let username = req.cookies['username'];
-  let obj = {id: username, email: userEmail, password: userPassword};
-  userDatabase[username] = obj;
-  //console.log(userDatabase);
+  let randomID = generateRandomString();
+  let obj = {id: randomID, email: userEmail, password: userPassword};
+      if (!(userEmail && userPassword) || (checkForExistingEmail(userEmail))){
+        res.status(404)
+          .send('UNACCEPTABLLEEEE');
+      } else {
+          userDatabase[randomID] = obj;
+  res.cookie('user_id', randomID);
+  console.log(userDatabase);
   res.redirect('/');
-});
+      }
+
+  });
 
 app.get('/urls/:id', (req, res) => {
   let templateVars = { shortURL: req.params.id,
@@ -113,3 +121,15 @@ app.get('/urls.json', (req, res) => {
 app.listen(PORT, () => {
   console.log(`hey guys, checking in on port: ${PORT}`);
 });
+
+// returns true if user email matches existing email
+function checkForExistingEmail(email){
+  for (key in userDatabase){
+    if (userDatabase[key].email === email) {
+    return true;
+  } else {
+    return false;
+  }
+}
+}
+
