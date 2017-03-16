@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 app.set('view engine', 'ejs');
 //object which holds the shortUrl and respective long Url as key value pairs
 const urlDatabase = {
@@ -25,10 +27,9 @@ app.get('/urls/new', (req, res) => {
 app.post('/urls', (req, res) => {
   console.log(req.body);
   let short = generateRandomString();
-
   let long = req.body['longURL'];
   urlDatabase[short] = long;
-  res.redirect('/urls/');
+  res.redirect('/urls');
   console.log(urlDatabase);
 });
 
@@ -36,23 +37,33 @@ app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('/urls/');
 });
+// generates a cookie based off of user inputed username
+app.post('/login', (req, res) => {
+  let username = req.body['username'];
+  res.cookie('username', username);
+  //console.log(username);
+  res.redirect('/');
+});
 
 app.post('/urls/:id', (req, res) => {
   const shortUrl = req.params.id;
   let longUrl = req.body.longURL;
   urlDatabase[shortUrl] = longUrl;
 
-  res.redirect('/urls/');
+  res.redirect('/urls');
 });
 
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  console.log(req.cookies['username']);
+  let templateVars = { urls: urlDatabase, username: req.cookies["username"]};
+  //console.log(templateVars.username);
   res.render('urls_index', templateVars);
 });
 
 app.get('/urls/:id', (req, res) => {
   let templateVars = { shortURL: req.params.id,
-                       longURL: urlDatabase[req.params.id]  };
+                       longURL: urlDatabase[req.params.id],
+                       username: req.cookies["username"]};
   res.render('urls_show', templateVars);
 });
 
@@ -62,10 +73,6 @@ app.get('/', (req, res) => {
 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
-})
-
-app.get('/hello', (req, res) => {
-  res.end('<html><body>Hello<b>World</b></body></html>\n');
 });
 
 app.listen(PORT, () => {
