@@ -5,10 +5,11 @@
   <body style="font-size:20px; padding:50px;">
 
 <% if(username){ %>
-   <h1>what it do mang</h1>
+   <h1>you're logged in as: <%=username %></h1>
    <a href='/logout'>logout</a>
  <% } else{ %>
    <form action='/login' method='POST'>
+    <h1>enter your username</h1>
     <input type='text' name='username' value= '<%=username %>'>
     <br>
     <input type='submit' value='Update'>
