@@ -35,7 +35,7 @@ function generateRandomString() {
 }
 
 app.get('/urls/new', (req, res) => {
-  let templateVars = { urls: urlDatabase, username: req.cookies["username"]};
+  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], username: req.user_id["user_id"]};
   res.render('urls_new', templateVars);
 });
 
@@ -50,7 +50,7 @@ app.post('/urls', (req, res) => {
 
 app.get('/urls', (req, res) => {
   //console.log(req.cookies['username']);
-  let templateVars = { urls: urlDatabase, username: req.cookies["username"]};
+  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], user_id: req.cookies["user_id"]};
   //console.log(templateVars.username);
   res.render('urls_index', templateVars);
 });
@@ -58,6 +58,11 @@ app.get('/urls', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('/urls/');
+});
+
+app.get('/login', (req, res) => {
+  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], user_id: req.cookies["user_id"]};
+  res.render('login', templateVars);
 });
 // generates a cookie based off of user inputed username
 app.post('/login', (req, res) => {
@@ -73,7 +78,7 @@ app.get('/logout', (req, res) => {
 });
 //registration page
 app.get('/register', (req, res) => {
-  let templateVars = { urls: urlDatabase, username: req.cookies['username']};
+  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies['user_id']], user_id: req.cookies['user_id']};
   res.render('register', templateVars);
 });
 
@@ -96,9 +101,7 @@ app.post('/register', (req, res) => {
   });
 
 app.get('/urls/:id', (req, res) => {
-  let templateVars = { shortURL: req.params.id,
-                       longURL: urlDatabase[req.params.id],
-                       username: req.cookies["username"]};
+  let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id]};
   res.render('urls_show', templateVars);
 });
 
