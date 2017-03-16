@@ -4,9 +4,15 @@
   </head>
   <body style="font-size:20px; padding:50px;">
 
-    <form action='/login' method='POST'>
+<% if(username){ %>
+   <h1>what it do mang</h1>
+   <a href='/logout'>logout</a>
+ <% } else{ %>
+   <form action='/login' method='POST'>
     <input type='text' name='username' value= '<%=username %>'>
     <br>
     <input type='submit' value='Update'>
     </form>
+<% } %>
+
   </body>

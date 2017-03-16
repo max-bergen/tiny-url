@@ -1,3 +1,4 @@
+//initializing
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -21,7 +22,8 @@ function generateRandomString() {
 }
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  let templateVars = { urls: urlDatabase, username: req.cookies["username"]};
+  res.render('urls_new', templateVars);
 });
 
 app.post('/urls', (req, res) => {
@@ -45,6 +47,11 @@ app.post('/login', (req, res) => {
   res.redirect('/');
 });
 
+app.get('/logout', (req, res) => {
+ res.clearCookie('username');
+ res.redirect('/');
+});
+
 app.post('/urls/:id', (req, res) => {
   const shortUrl = req.params.id;
   let longUrl = req.body.longURL;
@@ -54,7 +61,7 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  console.log(req.cookies['username']);
+  //console.log(req.cookies['username']);
   let templateVars = { urls: urlDatabase, username: req.cookies["username"]};
   //console.log(templateVars.username);
   res.render('urls_index', templateVars);
