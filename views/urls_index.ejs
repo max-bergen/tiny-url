@@ -6,14 +6,15 @@
 </head>
 <body>
   <table>
+    <h2><a href='/urls/new'>new</a><h2>
     <% for(key in urls) { %>
-      <tr>
-        <td><%= key %>: <%= urls[key].longUrl %></td>
-        <td><a href='/urls/<%=key%>'>edit</a></td>
-        <td><form action='/urls/<%=key%>/delete' method='POST'>
+      <ol>
+        <li><%= key %>: <%= urls[key].longUrl %>
+        <a href='/urls/<%=key%>'>edit</a></li>
+        <form action='/urls/<%=key%>/delete' method='POST'>
         <button>Delete</button>
-        </form></td>
-      </tr>
+        </form></li>
+      </ol>
     <% } %>
     </table>
 </body>
