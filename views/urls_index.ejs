@@ -9,7 +9,9 @@
     <h2><a href='/urls/new'>new</a><h2>
     <% for(key in urls) { %>
       <ol>
-        <li><%= key %>: <%= urls[key].longUrl %>
+        <li>
+
+        <a href="<%= urls[key].longUrl %>"><%= key %></a>: <%= urls[key].longUrl %>
         <a href='/urls/<%=key%>'>edit</a></li>
         <form action='/urls/<%=key%>/delete' method='POST'>
         <button>Delete</button>

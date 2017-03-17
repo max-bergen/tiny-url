@@ -28,6 +28,7 @@ const userDatabase = {
   }
 };
 
+app.use(express.static('public'));
 //object which holds the shortUrl and respective long Url as key value pairs
 const urlDatabase = {
   'b2xVn2': {'longUrl': 'http://www.lighthouselabs.ca', 'userID': 'userRandomID'},
@@ -61,7 +62,7 @@ app.post('/urls', (req, res) => {
   let id = req.session.user_id
   urlDatabase[short] = {longUrl: long, userID: id};
   res.redirect('/urls');
-  console.log(urlDatabase);
+  //console.log(urlDatabase);
 });
 
 app.get('/urls', (req, res) => {
