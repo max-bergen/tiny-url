@@ -5,16 +5,16 @@
   <% include ./partials/_header %>
 </head>
 <body>
-  <ol>
+  <table>
     <% for(key in urls) { %>
-      <li>
-      <%= key %>: <%= urls[key] %>
-      <form action='/urls/<%=key%>/delete' method='POST'>
-      <a href='/urls/<%=key%>'>edit</a>
-      <button>Delete</button>
-      </form>
-      </li>
+      <tr>
+        <td><%= key %>: <%= urls[key].longUrl %></td>
+        <td><a href='/urls/<%=key%>'>edit</a></td>
+        <td><form action='/urls/<%=key%>/delete' method='POST'>
+        <button>Delete</button>
+        </form></td>
+      </tr>
     <% } %>
-    </ol>
+    </table>
 </body>
 </html>

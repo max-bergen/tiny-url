@@ -10,22 +10,22 @@ app.set('view engine', 'ejs');
 
 //database for users
 const userDatabase = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+  'userRandomID': {
+    id: 'userRandomID',
+    email: 'user@example.com',
+    password: 'userpassword'
   },
- "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
+ 'user2RandomID': {
+    id: 'user2RandomID',
+    email: 'user2@example.com',
+    password: 'user2password'
   }
 };
 
 //object which holds the shortUrl and respective long Url as key value pairs
 const urlDatabase = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
+  'b2xVn2': {'longUrl': 'http://www.lighthouselabs.ca', 'userID': 'userRandomID'},
+  '9sm5xK': {'longUrl': 'http://www.google.com', 'userID': 'user2RandomID'}
 };
 
 for (key in userDatabase){}
@@ -51,7 +51,8 @@ app.post('/urls', (req, res) => {
   //console.log(req.body);
   let short = generateRandomString();
   let long = req.body['longURL'];
-  urlDatabase[short] = long;
+  let id = req.cookies['user_id']
+  urlDatabase[short] = {longUrl: long, userID: id};
   res.redirect('/urls');
   //console.log(urlDatabase);
 });
@@ -63,8 +64,15 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls/:id/delete', (req, res) => {
-  delete urlDatabase[req.params.id];
+  let id = req.cookies["user_id"]
+  let short = req.params.id;
+  let comparedId = urlDatabase[short].userID;
+  if (id === comparedId){
+  delete urlDatabase[short];
   res.redirect('/urls/');
+  } else {
+    res.redirect('/urls');
+  }
 });
 
 app.get('/login', (req, res) => {
@@ -124,11 +132,17 @@ app.get('/urls/:id', (req, res) => {
 });
 
 app.post('/urls/:id', (req, res) => {
-  let shortUrl = req.params.id;
-  let longUrl = req.body.longURL;
-  urlDatabase[shortUrl] = longUrl;
-
+  let short = req.params.id;
+  let long = req.body.longURL;
+  let id = req.cookies['user_id']
+  let comparedId = urlDatabase[short].userID;
+  if (id === comparedId){
+  urlDatabase[short] = {longUrl: long, userID: id};
+  console.log(urlDatabase);
   res.redirect('/urls');
+  } else {
+    res.redirect('/urls');
+  }
 });
 
 app.get('/', (req, res) => {
