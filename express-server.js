@@ -7,11 +7,7 @@ const cookieParser = require("cookie-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-//object which holds the shortUrl and respective long Url as key value pairs
-const urlDatabase = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
-};
+
 //database for users
 const userDatabase = {
   "userRandomID": {
@@ -25,6 +21,13 @@ const userDatabase = {
     password: "dishwasher-funk"
   }
 };
+
+//object which holds the shortUrl and respective long Url as key value pairs
+const urlDatabase = {
+  'b2xVn2': 'http://www.lighthouselabs.ca',
+  '9sm5xK': 'http://www.google.com'
+};
+
 for (key in userDatabase){}
 //generates a random 6 character long string
 function generateRandomString() {
@@ -38,6 +41,10 @@ function generateRandomString() {
 app.get('/urls/new', (req, res) => {
   let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]]};
   res.render('urls_new', templateVars);
+});
+
+app.post('/urls/new', (req, res) => {
+  res.redirect('/login');
 });
 
 app.post('/urls', (req, res) => {
