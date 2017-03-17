@@ -58,9 +58,11 @@ app.post('/urls', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-
-  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], user_id: req.cookies["user_id"]};
+  let id = req.cookies["user_id"];
+  let templateVars = { urls: urlsForUsers(id), user: userDatabase[req.cookies["user_id"]], user_id: req.cookies["user_id"]};
   res.render('urls_index', templateVars);
+  console.log('id: ',id);
+  console.log('database being passed: ', templateVars.urls);
 });
 
 app.post('/urls/:id/delete', (req, res) => {
@@ -138,7 +140,7 @@ app.post('/urls/:id', (req, res) => {
   let comparedId = urlDatabase[short].userID;
   if (id === comparedId){
   urlDatabase[short] = {longUrl: long, userID: id};
-  console.log(urlDatabase);
+  //console.log(urlDatabase);
   res.redirect('/urls');
   } else {
     res.redirect('/urls');
@@ -176,3 +178,17 @@ function checkMatchingObj(obj){
   }
   return false;
 }
+// returns object containing shortUrl and longUrl from urlDatabase which is relavent to logged in user
+function urlsForUsers(id){
+
+  for (key in urlDatabase){
+    if (id === urlDatabase[key].userID){
+      let long = urlDatabase[key];
+      let result = {[key]: long};
+      return result;
+    }
+  }
+  return false;
+}
+
+console.log('output of urlsForUsers: ', urlsForUsers('userRandomID'));
