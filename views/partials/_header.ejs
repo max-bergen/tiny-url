@@ -4,8 +4,11 @@
   </head>
   <body style="font-size:20px; padding:50px;">
     <% if (user) { %>
-    <a href='/register'>Register</a>
+    <h1>hello <%=user.email%></h1>
+    <a href='/logout'>Logout</a>
     <% } else { %>
     <a href='/login'>Login</a>
+    <br>
+    <a href='/register'>Register</a>
     <% } %>
   </body>

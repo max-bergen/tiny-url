@@ -25,6 +25,7 @@ const userDatabase = {
     password: "dishwasher-funk"
   }
 };
+for (key in userDatabase){}
 //generates a random 6 character long string
 function generateRandomString() {
   let text = '';
@@ -35,7 +36,7 @@ function generateRandomString() {
 }
 
 app.get('/urls/new', (req, res) => {
-  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], username: req.user_id["user_id"]};
+  let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]]};
   res.render('urls_new', templateVars);
 });
 
@@ -49,9 +50,8 @@ app.post('/urls', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  //console.log(req.cookies['username']);
+
   let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], user_id: req.cookies["user_id"]};
-  //console.log(templateVars.username);
   res.render('urls_index', templateVars);
 });
 
@@ -64,16 +64,28 @@ app.get('/login', (req, res) => {
   let templateVars = { urls: urlDatabase, user: userDatabase[req.cookies["user_id"]], user_id: req.cookies["user_id"]};
   res.render('login', templateVars);
 });
-// generates a cookie based off of user inputed username
+
 app.post('/login', (req, res) => {
-  let username = req.body['username'];
-  res.cookie('username', username);
-  //console.log(username);
+  let userEmail = req.body.email;
+  let userPassword = req.body.password;
+  let obj = {'email': userEmail, 'password': userPassword};
+  if (!(checkForExistingEmail(userEmail))) {
+    res.status(403)
+          .send('email not found');
+          console.log(obj);
+  } else if (!(match = checkMatchingObj(obj))){
+    res.status(403)
+
+        .send('passwords don\'t match');
+  } else {
+  res.cookie('user_id', match)
   res.redirect('/');
+
+  }
 });
 
 app.get('/logout', (req, res) => {
- res.clearCookie('username');
+ res.clearCookie('user_id');
  res.redirect('/');
 });
 //registration page
@@ -97,11 +109,10 @@ app.post('/register', (req, res) => {
   console.log(userDatabase);
   res.redirect('/');
       }
-
-  });
+});
 
 app.get('/urls/:id', (req, res) => {
-  let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id]};
+  let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], user: userDatabase[req.cookies['user_id']], user_id: req.cookies['user_id']};
   res.render('urls_show', templateVars);
 });
 
@@ -118,6 +129,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls.json', (req, res) => {
+
   res.json(urlDatabase);
 });
 
@@ -129,10 +141,17 @@ app.listen(PORT, () => {
 function checkForExistingEmail(email){
   for (key in userDatabase){
     if (userDatabase[key].email === email) {
-    return true;
-  } else {
-    return false;
+      return true;
+    }
   }
+  return false;
 }
+// returns key if password and email match, returns false if they don't
+function checkMatchingObj(obj){
+  for (key in userDatabase){
+    if (obj.password === userDatabase[key].password && obj.email === userDatabase[key].email){
+      return key;
+    }
+  }
+  return false;
 }
-
