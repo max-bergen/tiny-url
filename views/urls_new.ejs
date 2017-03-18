@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang='en'>
-<head>
-  <title>TinyApp</title>
-  <% include ./partials/_header %>
-</head>
-    <% if (user) { %>
-    <form action='/urls' method='POST' style='margin:150px'>
-      <label for='longURL'>Enter a URL:</label>
-      <input id='longURL' type='text' name='longURL'          placeholder='http://' style='width: 300px'>
-      <input type='submit' value='Submit'>
-      </form>
+  <head>
+    <title>TinyApp</title>
+    <% include ./partials/_header %>
+  </head>
+  <body>
+      <% if (user) { %>
+        <form action='/urls' method='POST' style='margin:150px'>
+        <label for='longURL'>Enter a URL:</label>
+        <input id='longURL' type='text' name='longURL' placeholder='http://' style='width: 300px'>
+        <input type='submit' value='Submit'>
+        </form>
       <% } else { %>
-      <form action='/urls/new' method='POST'> </form>
+        <form action='/urls/new' method='POST'> </form>
       <% } %>
   </body>
 </html>

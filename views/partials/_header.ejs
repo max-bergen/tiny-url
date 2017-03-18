@@ -4,11 +4,12 @@
   </head>
   <body style="font-size:20px; padding:50px; background-size: cover; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/plumbus.jpg')">
     <% if (user) { %>
-    <h1>hello, <%=user.email%></h1>
-    <a href='/logout'>Logout</a>
+      <h1>hello, <%=user.email%></h1>
+      <a href='/logout'>Logout</a>
     <% } else { %>
-    <a href='/login'>Login</a>
-    <br>
-    <a href='/register'>Register</a>
+      <a href='/login'>Login</a>
+      <br>
+      <a href='/register'>Register</a>
     <% } %>
   </body>
+</html>

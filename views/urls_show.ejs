@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang='en'>
-<head>
-  <title>TinyApp</title>
-  <% include ./partials/_header %>
-</head>
-<body>
-  <ul>
-
-    <li>ShortURL: <%= shortURL %> </li>
-    <li>
-
-    <form action='/urls/<%= shortURL %>' method='POST'>
-    <input type='text' name= 'longURL' value= <%= longURL.longUrl %> ><br>
-    <input type='submit' value='Update'>
-    </form>
-    </li>
-
+  <head>
+    <title>TinyApp</title>
+    <% include ./partials/_header %>
+  </head>
+  <body>
+    <ul>
+      <li>ShortURL: <%= shortURL %> </li>
+      <li>
+      <form action='/urls/<%= shortURL %>' method='POST'>
+      <input type='text' name= 'longURL' value= <%= longURL.longUrl %> ><br>
+      <input type='submit' value='Update'>
+      </form>
+      </li>
     </ul>
-</body>
+  </body>
 </html>
