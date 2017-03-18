@@ -3,7 +3,7 @@
 
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
@@ -44,8 +44,13 @@ app.listen(PORT, () => {
   //URLS/NEW
 
 app.get('/urls/new', (req, res) => {
-  let templateVars = { urls: urlDatabase, user: userDatabase[req.session.user_id]};
-  res.render('urls_new', templateVars);
+  if (req.session.user_id){
+    let templateVars = { urls: urlDatabase, user: userDatabase[req.session.user_id]};
+    res.render('urls_new', templateVars);
+  } else {
+    res.status(401)
+          .send('wat');
+  }
 });
 
 app.post('/urls/new', (req, res) => {
@@ -63,9 +68,14 @@ app.post('/urls', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  let id = req.session.user_id;
-  let templateVars = { urls: urlsForUsers(id), user: userDatabase[req.session.user_id], user_id: req.session.user_id};
-  res.render('urls_index', templateVars);
+  if (req.session.user_id) {
+    let templateVars = { urls: urlsForUsers(req.session.user_id), user: userDatabase[req.session.user_id], user_id: req.session.user_id};
+    res.render('urls_index', templateVars)
+    res.status(200);
+  } else {
+    res.status(401)
+    res.redirect('/login');
+  }
 });
 
   //URLS/:id
@@ -74,6 +84,7 @@ app.get('/urls/:id', (req, res) => {
   let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], user: userDatabase[req.session.user_id], user_id: req.session.user_id};
   if (urlDatabase[req.params.id]){
     res.render('urls_show', templateVars);
+    res.status(200);
   } else {
     res.status(404)
           .send('url is so tiny it doens\'t even exist');
@@ -105,7 +116,14 @@ app.post('/urls/:id/delete', (req, res) => {
   }
 });
 
-  //LOGIN LOGOUT REGISTER
+ //  //U/:id
+ // app.get('/u/:id', (req, res) => {
+ //   //let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], user: userDatabase[req.session.user_id], user_id: req.session.user_id};
+ //   console.log(urlDatabase[req.params.id)];
+ //   res.redirect();
+ // });
+
+   //LOGIN LOGOUT REGISTER
 
 app.get('/login', (req, res) => {
   let templateVars = { urls: urlDatabase, user: userDatabase[req.session.user_id], user_id: req.session.user_id};
@@ -118,11 +136,10 @@ app.post('/login', (req, res) => {
   let obj = {'email': userEmail, 'password': userPassword};
   if (!(checkForExistingEmail(userEmail))) {
     res.status(403)
-          .send('email not found');
+    .send('email not found');
   } else if (!(match = checkMatchingObj(obj))){
     res.status(403)
-
-        .send('passwords don\'t match');
+    .send('passwords don\'t match');
   } else {
   req.session.user_id = match;
   res.redirect('/urls');
@@ -132,12 +149,16 @@ app.post('/login', (req, res) => {
 
 app.get('/logout', (req, res) => {
  req.session.user_id = null;
- res.redirect('/urls');
+ res.redirect('/');
 });
 
 app.get('/register', (req, res) => {
-  let templateVars = { urls: urlDatabase, user: userDatabase[req.session.user_id], user_id: req.session.user_id};
-  res.render('register', templateVars);
+  if (req.session.user_id) {
+    res.redirect('/');
+  } else {
+    let templateVars = { urls: urlDatabase, user: userDatabase[req.session.user_id], user_id: req.session.user_id};
+    res.render('register', templateVars);
+  }
 });
 
 app.post('/register', (req, res) => {
@@ -157,10 +178,14 @@ app.post('/register', (req, res) => {
       }
 });
 
-  //REDIRECT
+  //HOME
 
 app.get('/', (req, res) => {
-  res.redirect('/urls');
+  if (req.session.user_id){
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
 });
 
 //FUNCTIONS
