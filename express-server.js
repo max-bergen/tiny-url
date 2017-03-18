@@ -1,20 +1,17 @@
-//initializing
+
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
-//const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 app.use(bodyParser.urlencoded({extended: true}));
-//app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   secret: 'urlshy5hdyjtid'
 }))
 app.set('view engine', 'ejs');
 
-//database for users
 const userDatabase = {
   'userRandomID': {
     id: 'userRandomID',
@@ -29,14 +26,12 @@ const userDatabase = {
 };
 
 app.use(express.static('public'));
-//object which holds the shortUrl and respective long Url as key value pairs
 const urlDatabase = {
   'b2xVn2': {'longUrl': 'http://www.lighthouselabs.ca', 'userID': 'userRandomID'},
   '9sm5xK': {'longUrl': 'http://www.google.com', 'userID': 'user2RandomID'}
 };
 
 for (key in userDatabase){}
-//generates a random 6 character long string
 function generateRandomString() {
   let text = '';
   let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -52,25 +47,20 @@ app.get('/urls/new', (req, res) => {
 
 app.post('/urls/new', (req, res) => {
   res.redirect('/login');
-  //console.log(urlDatabase);
 });
 
 app.post('/urls', (req, res) => {
-  //console.log(req.body);
   let short = generateRandomString();
   let long = req.body['longURL'];
   let id = req.session.user_id
   urlDatabase[short] = {longUrl: long, userID: id};
   res.redirect('/urls');
-  //console.log(urlDatabase);
 });
 
 app.get('/urls', (req, res) => {
   let id = req.session.user_id;
   let templateVars = { urls: urlsForUsers(id), user: userDatabase[req.session.user_id], user_id: req.session.user_id};
   res.render('urls_index', templateVars);
-  //console.log('id: ',id);
-  //console.log('database being passed: ', templateVars.urls);
 });
 
 app.post('/urls/:id/delete', (req, res) => {
@@ -148,7 +138,6 @@ app.post('/urls/:id', (req, res) => {
   let comparedId = urlDatabase[short].userID;
   if (id === comparedId){
   urlDatabase[short] = {longUrl: long, userID: id};
-  //console.log(urlDatabase);
   res.redirect('/urls');
   } else {
     res.redirect('/urls');
@@ -156,7 +145,7 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.end('welcome to TinyUrl');
+  res.redirect('/urls');
 });
 
 app.get('/urls.json', (req, res) => {
@@ -168,7 +157,6 @@ app.listen(PORT, () => {
   console.log(`hey guys, checking in on port: ${PORT}`);
 });
 
-// returns true if user email matches existing email
 function checkForExistingEmail(email){
   for (key in userDatabase){
     if (userDatabase[key].email === email) {
@@ -177,8 +165,7 @@ function checkForExistingEmail(email){
   }
   return false;
 }
-//(obj.password === (userDatabase[key].password)
-// returns key if password and email match, returns false if they don't
+
 function checkMatchingObj(obj){
   for (key in userDatabase){
     if (bcrypt.compareSync(obj.password, userDatabase[key].password) && obj.email === userDatabase[key].email){
@@ -187,7 +174,7 @@ function checkMatchingObj(obj){
   }
   return false;
 }
-// returns object containing shortUrl and longUrl from urlDatabase which is relavent to logged in user
+
 function urlsForUsers(id){
     let result = {};
   for (key in urlDatabase){
@@ -197,5 +184,3 @@ function urlsForUsers(id){
     }
   } return result;
 }
-
-//console.log('output of urlsForUsers: ', urlsForUsers('userRandomID'));

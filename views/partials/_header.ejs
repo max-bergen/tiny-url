@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
   </head>
-  <body background='/images/plumbus.jpg' style="font-size:20px; padding:50px; background-size: cover">
+  <body style="font-size:20px; padding:50px; background-size: cover; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/plumbus.jpg')">
     <% if (user) { %>
     <h1>hello, <%=user.email%></h1>
     <a href='/logout'>Logout</a>

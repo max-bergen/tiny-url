@@ -6,12 +6,15 @@
 </head>
 <body>
   <table>
-    <h2><a href='/urls/new'>new</a><h2>
+    <% if (user_id){ %>
+    <h2><a href='/urls/new'>NEW</a><h2>
+    <% } else { %>
+    <h1><font color="white">WELCOME TO TINY URL! THESE URLS ARE SO FRICKIN TINY HNNGGG OH GOD THEY'RE TINY...shhhh wait! I think I hear someone coming..DON'T LET THEM KNOW HOW TINY THESE URLS ARE! No one can know but you...I..trust..you...more than I trust myself sometimes, wow I really think I made an emotional break through there, anyways, click above to login or register.. I can smell you better once you're inside</font></h1>
+    <% } %>
     <% for(key in urls) { %>
       <ol>
         <li>
-
-        <a href="<%= urls[key].longUrl %>"><%= key %></a>: <%= urls[key].longUrl %>
+       <a href="<%= urls[key].longUrl %>"><%= key %></a>: <%= urls[key].longUrl %>
         <a href='/urls/<%=key%>'>edit</a></li>
         <form action='/urls/<%=key%>/delete' method='POST'>
         <button>Delete</button>
