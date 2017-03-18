@@ -173,7 +173,7 @@ app.post('/register', (req, res) => {
       } else {
           userDatabase[randomID] = obj;
   req.session.user_id = randomID;
-  console.log(userDatabase);
+  //console.log(userDatabase);
   res.redirect('/urls');
       }
 });
